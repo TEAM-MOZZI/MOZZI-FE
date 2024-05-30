@@ -1,22 +1,12 @@
-import { View, Text, Button, TouchableOpacity, Image } from 'react-native'
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
+import React, { useLayoutEffect } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import styled from 'styled-components/native'
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import { Calendar } from 'react-native-calendars'
 
 import useDiaryStore from '../../store/DiaryStore'
-
-interface DayStyleProps {
-  isSelected: boolean;
-}
-
-interface DayNumProps {
-  textColor: string;
-  isToday: boolean;
-}
 
 const Container = styled(View)`
   flex: 1;
@@ -58,7 +48,6 @@ const CalendarContainer = styled(View)`
 
 const MyCalendar = styled(Calendar).attrs({
   theme: {
-    // arrowColor: `${(props) => props.theme.palette.pointDark}`,
     arrowColor: '#E4E196',
   },
 })`

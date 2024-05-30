@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { MultiSelect, Dropdown } from 'react-native-element-dropdown'
-
 import styled from 'styled-components/native'
 
 import useDropdownStore from '../../store/DropdownStore'
 import useProfileStore from '../../store/ProfileStore'
+
+
+interface CustomDropdownProps {
+  data: string[] 
+  placeholder: string
+  isMulti: boolean
+}
+
+interface Item {
+  _index?: number
+  label: string
+  value: boolean
+}
 
 const SelectedStyle = styled(View)`
   flex-direction: row;
@@ -24,8 +36,8 @@ const TextSelectedStyle = styled(Text)`
   color: ${(props) => props.theme.palette.font};
 `
 
-function CustomDropdown ({ data, placeholder, isMulti }) {
-  const { dropdownData, setDropdownData, isVeganData, setIsVeganData } = useDropdownStore()
+function CustomDropdown({ data, placeholder, isMulti }: Readonly<CustomDropdownProps>) {
+  const { dropdownData, setDropdownData, setIsVeganData } = useDropdownStore()
   const { profileData } = useProfileStore()
   const [selected, setSelected] = useState(
     profileData.foods && profileData.foods.length > 0
@@ -35,13 +47,14 @@ function CustomDropdown ({ data, placeholder, isMulti }) {
       : []
     )
 
-  const handleData = (item) => {
+  const handleData = (item:Item) => {
     setIsVeganData(item.value)
   }
   
   useEffect(() => {
     console.log(dropdownData, '선택된 애들')
   }, [dropdownData])
+
 
   return (
     <>

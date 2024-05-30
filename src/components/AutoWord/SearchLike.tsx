@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import Autocomplete from 'react-native-autocomplete-input'
 import styled from 'styled-components/native'
 
 import useProfileStore from '../../store/ProfileStore'
-import { Line } from 'react-native-svg'
+
+
+interface SearchLikeProps {
+  data: string[] 
+  onSelect: (selectedItems: string[]) => void
+  flag: boolean
+}
 
 const Container = styled(View)`
   width: 100%;
@@ -65,28 +71,29 @@ const TextSelectedStyle = styled(Text)`
   color: ${(props) => props.theme.palette.font};
 `
 
-export const SearchBar = ({ data, onSelect, flag }) => {
+
+export const SearchLike:React.FC<SearchLikeProps> = ({ data, onSelect, flag }) => {
   const { profileData } = useProfileStore()
-  const [ tmpData, setTmpData ] = useState(
+  const [ tmpData, setTmpData ] = useState<string[]>(
     profileData.foods && profileData.foods.length > 0
     ? profileData.foods
-      .filter(food => food.isLike === flag)
+      .filter(food => (food.isLike === 1) === flag)
       .map(food => food.ingredientName)
       : []
     )
-  const [ searchQuery, setSearchQuery ] = useState('')
-  const [ filteredData, setFilteredData ] = useState([])
-  const [ recipeName, setRecipeName ] = useState('')
+  const [ searchQuery, setSearchQuery ] = useState<string>('')
+  const [ filteredData, setFilteredData ] = useState<string[]>([])
+  const [ recipeName, setRecipeName ] = useState<string>('')
 
   // 자동 완성 데이터 필터링
-  const handleAutoComplete = (text) => {
+  const handleAutoComplete = (text: string) => {
     setSearchQuery(text)
     const filtered = data.filter(item => item.includes(text))
     setFilteredData(filtered)
     console.log('----', filtered)
   }
 
-  const handleSelect = (item) => {
+  const handleSelect = (item: string) => {
     setTmpData(prev => [...prev, item])
     setSearchQuery('')
     setRecipeName(item)
@@ -95,9 +102,9 @@ export const SearchBar = ({ data, onSelect, flag }) => {
   }
 
   useEffect(() => {
-    console.log('템프데이터', tmpData)
     onSelect(tmpData)
   }, [tmpData])
+
 
   return (
     <View>

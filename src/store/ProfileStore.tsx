@@ -2,8 +2,41 @@ import { create } from 'zustand'
 import axios from '../../axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const useProfileStore = create((set) => ({
-  profileData: [],
+
+interface FoodItem {
+  ingredientName: string
+  isLike: number
+  mainAllergy?: string
+}
+
+interface ProfileData {
+  nickname?: string
+  isVegan?: boolean
+  foods?: FoodItem[]
+}
+
+interface Form {
+  nickname: string
+  Info: any[]
+  isVegan: boolean
+}
+
+interface ProfileStore {
+  profileData: ProfileData
+  foodInfo: any[]
+  setFoodInfo: (foodInfo: any[]) => void
+  form: Form
+  setForm: (newForm: Form) => void
+  getProfile: () => Promise<void>
+  editNickname: (nickname: string) => Promise<void>
+  editIsVegan: (isVegan: boolean) => Promise<void>
+  editFoodInfo: (foods: any[]) => Promise<void>
+  profileReset: () => void
+}
+
+
+const useProfileStore = create<ProfileStore>((set) => ({
+  profileData: {},
   foodInfo: [],
   setFoodInfo: (foodInfo) => {
     set({ foodInfo })
@@ -20,7 +53,6 @@ const useProfileStore = create((set) => ({
   
   getProfile: async () => {
     const token = await AsyncStorage.getItem('accessToken')
-    console.log(token)
     try {
       const response = await axios.get('mozzi/auth/getUserProfile', {
         headers: {
@@ -35,7 +67,6 @@ const useProfileStore = create((set) => ({
           isVegan: response.data.isVegan
         }
       }))
-      console.log('프로필 데이터 잘 받음111111111111', response.data)
     } catch (error) {
       console.error('프로필 데이터 요청 실패', error)
     }
@@ -44,7 +75,6 @@ const useProfileStore = create((set) => ({
  // 닉네임 변경
   editNickname: async (nickname) => {
     const token = await AsyncStorage.getItem('accessToken')
-    console.log('닉네임 잘넘어오니?', nickname)
     try {
       const response = await axios.patch('mozzi/auth/setnickname', {
         nickname
@@ -53,7 +83,6 @@ const useProfileStore = create((set) => ({
           Authorization: `Bearer ${token}` // 헤더에 토큰 포함
         }
       })
-      console.log('닉네임 변경 성공', response.data)
       set((state) => ({
         profileData: {
           ...state.profileData,
@@ -68,16 +97,15 @@ const useProfileStore = create((set) => ({
   // 비건 여부 변경
   editIsVegan: async (isVegan) => {
     const token = await AsyncStorage.getItem('accessToken')
-    console.log(typeof(isVegan), '불린확인', isVegan)
     try {
       const response = await axios.patch('mozzi/auth/setvegan', {
         isVegan
       }, {
         headers: {
-          Authorization: `Bearer ${token}` // 헤더에 토큰 포함
+          Authorization: `Bearer ${token}`
         },
       })
-      console.log('비건 여부 변경 성공', response.data)
+
       set((state) => ({
         profileData: {
           ...state.profileData,
@@ -92,13 +120,12 @@ const useProfileStore = create((set) => ({
    // 음식 정보 변경
    editFoodInfo: async (foods) => {
     const token = await AsyncStorage.getItem('accessToken')
-    console.log('정보 잘 넘어오니?', foods)
     try {
       const response = await axios.post('mozzi/auth/setfood', {
         foods
       }, {
         headers: {
-          Authorization: `Bearer ${token}` // 헤더에 토큰 포함
+          Authorization: `Bearer ${token}`
         }
       })
       console.log('음식 정보 변경 성공', response.data)
@@ -110,7 +137,7 @@ const useProfileStore = create((set) => ({
 
   // 탈퇴 시 로직
   profileReset: () => set({
-    profileData: [],
+    profileData: {},
     foodInfo: [],
     form: {
       nickname: '',

@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import styled from 'styled-components/native'
 
 import SmallButton from '../../components/Button/SmallButton'

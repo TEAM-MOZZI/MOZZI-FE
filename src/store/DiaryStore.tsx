@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import axios from '../../axios'
-
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 
 const useDiaryStore = create((set) => ({
   calendarData: [],
-  getCalendar: async (foodYear, foodMonth) => {
+  getCalendar: async (foodYear:string, foodMonth:string) => {
     console.log('년도와 월 잘받았나?', foodYear, foodMonth)
     const token = await AsyncStorage.getItem('accessToken')
     try {
@@ -19,12 +19,11 @@ const useDiaryStore = create((set) => ({
         }
       })
       set({ calendarData: response.data.foods })
-      console.log('캘린더 데이터 잘 받음', response.data.foods)
     } catch (error) {
       console.error('캘린더 데이터 요청 실패', error)
     }
   },
-  deleteCalendar: async (id) => {
+  deleteCalendar: async (id:string) => {
     console.log('딜리트 아이디 잘 받았나?', id)
     const token = await AsyncStorage.getItem('accessToken')
     try {
@@ -36,7 +35,6 @@ const useDiaryStore = create((set) => ({
           id,
         }
       })
-      console.log('다이어리 디테일 삭제 성공')
     } catch (error) {
       console.error('다이어리 디테일 삭제 실패', error)
     }

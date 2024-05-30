@@ -2,7 +2,7 @@ import React from 'react'
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import LandingScreen from '../screens/landing/LandingScreen'
-import InputScreen from '../screens/landing/LandingInputScreen'
+import InputScreen from '../screens/landing/InputScreen'
 
 const Stack = createStackNavigator()
 
